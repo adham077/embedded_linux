@@ -19,7 +19,7 @@ int main(int argc,char* argv[]){
         }
         if(valid){
             dprintf(3,"%s",argv[1]);
-            argv[1]? printf("Caps lock on\n"):printf("Caps lock off\n");
+            strcmp(argv[1],"0")? printf("Caps lock on\n"):printf("Caps lock off\n");
         }
         else{
             dprintf(2,"%s","invalid argument\n");
