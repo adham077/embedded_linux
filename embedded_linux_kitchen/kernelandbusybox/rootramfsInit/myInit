@@ -1,0 +1,52 @@
+#!/bin/sh
+
+mount -t proc proc /proc
+mount -t sysfs sys /sys
+mount -t devtmpfs dev /dev
+
+echo "Welcome to the initramfs shell!"
+echo "Type '1' to mount and switch to the root filesystem on /dev/mmcblk0p2 (second partition)."
+echo "Type '2' to mount and switch to the root filesystem on /dev/mmcblk0p3 (third partition)."
+echo "Type '3' to exit this loop and drop to a shell."
+
+while true; do
+    echo -n "initramfs> "
+    read input
+
+    if [ "$input" = "1" ]; then
+        echo "Mounting root filesystem from /dev/mmcblk0p2..."
+
+        mount -t ext4 /dev/mmcblk0p2 /new_root
+        if [ $? -ne 0 ]; then
+            echo "Failed to mount root filesystem!"
+            continue
+        fi
+
+        echo "Root filesystem mounted successfully!"
+        echo "Switching to new root..."
+
+        exec chroot /new_root /sbin/init --login
+
+    elif [ "$input" = "2" ]; then
+        echo "Mounting root filesystem from /dev/mmcblk0p3..."
+
+        mount -t ext4 /dev/mmcblk0p3 /new_root
+        if [ $? -ne 0 ]; then
+            echo "Failed to mount root filesystem!"
+            continue
+        fi
+
+        echo "Root filesystem mounted successfully!"
+        echo "Switching to new root..."
+
+        exec chroot /new_root /sbin/init --login
+
+    elif [ "$input" = "3" ]; then
+        echo "Exiting the loop and dropping to a shell..."
+        break
+    else
+        echo "Invalid input. Please type '1', '2', or '3'."
+    fi
+done
+
+exec /bin/sh

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+mount -t devtmpfs devtempfs /dev
+mount -t proc null /proc
+mount -t sysfs null /sys
